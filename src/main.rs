@@ -1,6 +1,6 @@
 use plotters::prelude::*;
 
-mod barnsley_farn {
+mod barnsley_fern {
     #[derive(Debug)]
     pub struct Point {
         pub x: f64,
@@ -73,13 +73,13 @@ mod barnsley_farn {
 
 fn main() {
 
-    println!("barnsley farn");
+    println!("barnsley fern");
 
     let plot_dim = [10000, 20000];
     let plot = BitMapBackend::new("fern.png", (plot_dim[0], plot_dim[1])).into_drawing_area();
     plot.fill(&BLACK).unwrap();
 
-    let mut pnt = barnsley_farn::Point {
+    let mut pnt = barnsley_fern::Point {
         x: 0.0,
         y: 0.0,
     };
