@@ -1,8 +1,14 @@
+use plotters::prelude::*;
+
 mod barnsley_farn {
     #[derive(Debug)]
     pub struct Point {
         pub x: f32,
         pub y: f32,
+    }
+    pub struct PointU {
+        pub x: i32,
+        pub y: i32,
     }
 
     enum Case {
@@ -52,21 +58,38 @@ mod barnsley_farn {
         pub fn print(&self) {
             println!("{:?}", self);
         }
+        pub fn convert(&self, max_x: u32, max_y: u32) -> PointU{
+            let x = (self.x + 2.2) * max_x as f32 / 4.9;
+            let x = x as i32;
+            let y = max_y as f32 - (self.y * max_y as f32 / 10.0);
+            let y = y as i32;
+            PointU {
+                x,
+                y,
+            }
+        }
     }
 }
 
 fn main() {
+
     println!("barnsley farn");
+
+    let plot_dim = [10000, 20000];
+    let plot = BitMapBackend::new("fern.png", (plot_dim[0], plot_dim[1])).into_drawing_area();
+    plot.fill(&BLACK);
 
     let mut pnt = barnsley_farn::Point {
         x: 0.0,
         y: 0.0,
     };
-    for _ in 0..1000 {
+    for _ in 0..20000 {
         pnt = pnt.next();
         pnt.print();
         if pnt.x < -2.2 || pnt.x > 2.7 || pnt.y < 0.0 || pnt.y > 10.0 {
             panic!("Point out of range!");
         }
+        let pnt_u = pnt.convert(plot_dim[0], plot_dim[1]);
+        plot.draw(&Circle::new((pnt_u.x, pnt_u.y), 4, Into::<ShapeStyle>::into(&WHITE).filled()));
     }
 }
