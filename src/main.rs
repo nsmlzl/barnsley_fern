@@ -16,6 +16,7 @@ mod barnsley_fern {
     }
 
     impl BSet {
+        // get new random set
         fn new() -> BSet {
             use rand::Rng;
             let rnd_nbr = rand::thread_rng().gen_range(1, 101);
@@ -70,6 +71,9 @@ mod barnsley_fern {
 
         // convert point<f64> to point<i32> (for plotting)
         pub fn convert(&self, max_x: u32, max_y: u32) -> Point<i32>{
+            // convert from barnsley fern range to plot range
+            // -2.2 < x <  2.7 => 0 < x < max_x
+            //  0.0 < y < 10.0 => 0 < y < max_y
             let x = (self.x + 2.2) * max_x as f64 / 4.9;
             let x = x as i32;
             let y = max_y as f64 - self.y * max_y as f64 / 10.0;
@@ -94,10 +98,12 @@ fn main() {
     for _i in 0..20_000_000 {
         pnt = pnt.next();
         pnt.print();
+
         if pnt.x < -2.2 || pnt.x > 2.7 || pnt.y < 0.0 || pnt.y > 10.0 {
             panic!("Point out of range!");
         }
-        let pnt_u = pnt.convert(plot_dim[0], plot_dim[1]);
-        plot.draw(&Circle::new((pnt_u.x, pnt_u.y), 1, Into::<ShapeStyle>::into(&WHITE).filled())).unwrap();
+
+        let pnt_i = pnt.convert(plot_dim[0], plot_dim[1]);
+        plot.draw(&Circle::new((pnt_i.x, pnt_i.y), 1, Into::<ShapeStyle>::into(&WHITE).filled())).unwrap();
     }
 }
